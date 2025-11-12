@@ -17,6 +17,21 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
+    /* Student Area - Light Blue & Dark Blue */
+    --student-bg: 207 89% 94%;
+    --student-accent: 211 100% 34%;
+    --student-accent-foreground: 0 0% 100%;
+
+    /* Admin Area - Soft Purple & Deep Violet */
+    --admin-bg: 291 47% 95%;
+    --admin-accent: 277 100% 27%;
+    --admin-accent-foreground: 0 0% 100%;
+
+    /* Complaint Cards - Light Yellow & Amber */
+    --complaint-bg: 48 100% 94%;
+    --complaint-accent: 42 100% 52%;
+    --complaint-accent-foreground: 222.2 84% 4.9%;
+
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
@@ -36,7 +51,7 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -64,6 +79,21 @@ All colors MUST be HSL.
 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
+
+    /* Student Area - Darker shades */
+    --student-bg: 211 50% 15%;
+    --student-accent: 211 100% 50%;
+    --student-accent-foreground: 0 0% 100%;
+
+    /* Admin Area - Darker shades */
+    --admin-bg: 277 40% 15%;
+    --admin-accent: 277 100% 45%;
+    --admin-accent-foreground: 0 0% 100%;
+
+    /* Complaint Cards - Darker shades */
+    --complaint-bg: 42 50% 20%;
+    --complaint-accent: 42 100% 60%;
+    --complaint-accent-foreground: 0 0% 0%;
 
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;

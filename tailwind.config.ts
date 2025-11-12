@@ -19,6 +19,21 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        student: {
+          bg: "hsl(var(--student-bg))",
+          accent: "hsl(var(--student-accent))",
+          "accent-foreground": "hsl(var(--student-accent-foreground))",
+        },
+        admin: {
+          bg: "hsl(var(--admin-bg))",
+          accent: "hsl(var(--admin-accent))",
+          "accent-foreground": "hsl(var(--admin-accent-foreground))",
+        },
+        complaint: {
+          bg: "hsl(var(--complaint-bg))",
+          accent: "hsl(var(--complaint-accent))",
+          "accent-foreground": "hsl(var(--complaint-accent-foreground))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
