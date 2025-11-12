@@ -76,11 +76,6 @@ const AdminAuth = () => {
           <CardDescription>
             Sign in with your admin credentials
           </CardDescription>
-          <div className="mt-4 p-3 bg-muted rounded-lg text-sm">
-            <p className="font-semibold mb-1">Demo Admin Credentials:</p>
-            <p className="text-muted-foreground">Email: admin@brototype.com</p>
-            <p className="text-muted-foreground">Password: Admin@2025</p>
-          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignIn} className="space-y-4">
@@ -99,6 +94,14 @@ const AdminAuth = () => {
             >
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In as Admin
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full mt-2"
+              onClick={() => navigate('/')}
+            >
+              Back to Home
             </Button>
           </form>
         </CardContent>
