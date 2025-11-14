@@ -137,15 +137,23 @@ const StudentAuth = () => {
                   {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Sign In
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full mt-2"
-                  onClick={() => navigate('/')}
-                >
-                  Back to Home
-                </Button>
-              </form>
+            <Button
+              type="button"
+              variant="link"
+              className="w-full text-student-accent"
+              onClick={() => navigate('/forgot-password?type=student')}
+            >
+              Forgot Password?
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full mt-2"
+              onClick={() => navigate('/')}
+            >
+              Back to Home
+            </Button>
+          </form>
             </TabsContent>
 
             <TabsContent value="signup">
