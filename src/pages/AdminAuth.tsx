@@ -97,6 +97,14 @@ const AdminAuth = () => {
             </Button>
             <Button
               type="button"
+              variant="link"
+              className="w-full text-admin-accent"
+              onClick={() => navigate('/forgot-password?type=admin')}
+            >
+              Forgot Password?
+            </Button>
+            <Button
+              type="button"
               variant="outline"
               className="w-full mt-2"
               onClick={() => navigate('/')}
