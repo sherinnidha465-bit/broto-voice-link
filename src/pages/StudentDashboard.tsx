@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import ComplaintForm from "@/components/ComplaintForm";
 import ComplaintCard from "@/components/ComplaintCard";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 interface Complaint {
   id: string;
@@ -59,6 +61,27 @@ const StudentDashboard = () => {
     navigate('/');
   };
 
+  const statistics = useMemo(() => {
+    const total = complaints.length;
+    const pending = complaints.filter(c => c.status === 'pending').length;
+    const inProgress = complaints.filter(c => c.status === 'in_progress').length;
+    const resolved = complaints.filter(c => c.status === 'resolved').length;
+
+    const chartData = [
+      { status: 'Pending', count: pending, fill: 'hsl(var(--chart-1))' },
+      { status: 'In Progress', count: inProgress, fill: 'hsl(var(--chart-2))' },
+      { status: 'Resolved', count: resolved, fill: 'hsl(var(--chart-3))' },
+    ];
+
+    const pieData = [
+      { name: 'Pending', value: pending, fill: 'hsl(var(--chart-1))' },
+      { name: 'In Progress', value: inProgress, fill: 'hsl(var(--chart-2))' },
+      { name: 'Resolved', value: resolved, fill: 'hsl(var(--chart-3))' },
+    ];
+
+    return { total, pending, inProgress, resolved, chartData, pieData };
+  }, [complaints]);
+
   const filteredComplaints = complaints.filter((complaint) => {
     const matchesSearch = 
       complaint.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -105,6 +128,92 @@ const StudentDashboard = () => {
             </Button>
           </div>
         </div>
+
+        {/* Statistics Dashboard */}
+        {complaints.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Complaint Statistics</h2>
+            <div className="grid gap-4 md:grid-cols-4 mb-6">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Total Complaints</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{statistics.total}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-chart-1">{statistics.pending}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-chart-2">{statistics.inProgress}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">Resolved</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-chart-3">{statistics.resolved}</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Complaints by Status</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={statistics.chartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="status" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="count" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Status Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={statistics.pieData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        dataKey="value"
+                      >
+                        {statistics.pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
 
         {/* New Complaint Button */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
