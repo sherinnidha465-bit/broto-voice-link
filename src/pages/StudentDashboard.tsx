@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, Plus, Loader2, User } from "lucide-react";
+import { LogOut, Plus, Loader2, User, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ComplaintForm from "@/components/ComplaintForm";
 import ComplaintCard from "@/components/ComplaintCard";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface Complaint {
   id: string;
@@ -25,6 +26,8 @@ const StudentDashboard = () => {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loadingComplaints, setLoadingComplaints] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'in_progress' | 'resolved'>('all');
 
   useEffect(() => {
     if (!loading && (!user || isAdmin)) {
@@ -55,6 +58,16 @@ const StudentDashboard = () => {
     await signOut();
     navigate('/');
   };
+
+  const filteredComplaints = complaints.filter((complaint) => {
+    const matchesSearch = 
+      complaint.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      complaint.description.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'all' || complaint.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   if (loading || !user) {
     return (
@@ -111,6 +124,50 @@ const StudentDashboard = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Search and Filter */}
+        <div className="mb-6 space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search complaints by title or description..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              variant={statusFilter === 'all' ? 'default' : 'outline'}
+              onClick={() => setStatusFilter('all')}
+              size="sm"
+            >
+              All
+            </Button>
+            <Button
+              variant={statusFilter === 'pending' ? 'default' : 'outline'}
+              onClick={() => setStatusFilter('pending')}
+              size="sm"
+            >
+              Pending
+            </Button>
+            <Button
+              variant={statusFilter === 'in_progress' ? 'default' : 'outline'}
+              onClick={() => setStatusFilter('in_progress')}
+              size="sm"
+            >
+              In Progress
+            </Button>
+            <Button
+              variant={statusFilter === 'resolved' ? 'default' : 'outline'}
+              onClick={() => setStatusFilter('resolved')}
+              size="sm"
+            >
+              Resolved
+            </Button>
+          </div>
+        </div>
+
         {/* Complaints List */}
         {loadingComplaints ? (
           <div className="flex justify-center py-12">
@@ -120,9 +177,13 @@ const StudentDashboard = () => {
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">No complaints yet. Create your first one!</p>
           </div>
+        ) : filteredComplaints.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No complaints match your search criteria.</p>
+          </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {complaints.map((complaint) => (
+            {filteredComplaints.map((complaint) => (
               <ComplaintCard key={complaint.id} complaint={complaint} />
             ))}
           </div>
