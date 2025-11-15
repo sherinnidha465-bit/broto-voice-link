@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { useToast } from "@/hooks/use-toast";
 
 interface Complaint {
   id: string;
@@ -30,6 +31,7 @@ const StudentDashboard = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'in_progress' | 'resolved'>('all');
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading && (!user || isAdmin)) {
@@ -42,6 +44,50 @@ const StudentDashboard = () => {
       loadComplaints();
     }
   }, [user, isAdmin]);
+
+  // Set up realtime subscription for complaint updates
+  useEffect(() => {
+    if (!user || isAdmin) return;
+
+    const channel = supabase
+      .channel('complaint-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'complaints',
+          filter: `student_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const updatedComplaint = payload.new as Complaint;
+          const oldComplaint = payload.old as Complaint;
+
+          // Check if admin_response was added or status changed
+          if (updatedComplaint.admin_response && !oldComplaint.admin_response) {
+            toast({
+              title: "Admin Response Received",
+              description: `Your complaint "${updatedComplaint.title}" has received a response from an admin.`,
+            });
+          } else if (updatedComplaint.status !== oldComplaint.status) {
+            toast({
+              title: "Complaint Status Updated",
+              description: `Your complaint "${updatedComplaint.title}" status changed to ${updatedComplaint.status}.`,
+            });
+          }
+
+          // Update local state
+          setComplaints((prev) =>
+            prev.map((c) => (c.id === updatedComplaint.id ? updatedComplaint : c))
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, isAdmin, toast]);
 
   const loadComplaints = async () => {
     setLoadingComplaints(true);
