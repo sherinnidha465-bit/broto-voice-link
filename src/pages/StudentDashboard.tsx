@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, Plus, Loader2 } from "lucide-react";
+import { LogOut, Plus, Loader2, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ComplaintForm from "@/components/ComplaintForm";
 import ComplaintCard from "@/components/ComplaintCard";
@@ -73,14 +73,24 @@ const StudentDashboard = () => {
             <h1 className="text-3xl font-bold text-foreground">Student Dashboard</h1>
             <p className="text-muted-foreground mt-1">Manage your complaints</p>
           </div>
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="gap-2"
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/student/profile')}
+              className="gap-2"
+            >
+              <User className="w-4 h-4" />
+              Profile
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* New Complaint Button */}

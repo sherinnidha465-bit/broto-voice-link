@@ -9,6 +9,7 @@ import StudentAuth from "./pages/StudentAuth";
 import AdminAuth from "./pages/AdminAuth";
 import StudentDashboard from "./pages/StudentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import ProfileSettings from "./pages/ProfileSettings";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/student/auth" element={<StudentAuth />} />
             <Route path="/admin/auth" element={<AdminAuth />} />
             <Route path="/student/dashboard" element={<StudentDashboard />} />
+            <Route path="/student/profile" element={<ProfileSettings />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
